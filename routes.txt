@@ -1,0 +1,103 @@
+
+==================== RUTAS PÚBLICAS (SIN AUTENTICACIÓN) ====================
+GET     /                          -> landing (Selección rol Paciente/Médico + navegación)
+GET     /explorar                  -> public.index (Selector médicos + calendario semana)
+GET     /doctors/{doctor}          -> public.doctor (Perfil médico y espacios disponibles)
+GET     /appointments/new          -> public.appointments.new (Formulario para reservar; params: doctor, start)
+POST    /appointments              -> public.appointments.store (Crear cita pendiente)
+
+==================== AUTENTICACIÓN JETSTREAM ====================
+GET     /login                     -> login (formulario login)
+POST    /login                     -> login.submit (iniciado por Jetstream/Fortify)
+POST    /logout                    -> logout
+GET     /register                  -> register (si está habilitado)
+POST    /register                  -> register.submit
+GET     /forgot-password           -> password.request
+POST    /forgot-password           -> password.email
+GET     /reset-password/{token}    -> password.reset
+POST    /reset-password            -> password.update
+
+==================== PANEL PROTEGIDO (AUTH + VERIFIED) ====================
+GET     /home                      -> panel.home (Resumen pendientes y próximas confirmadas)
+GET     /calendar                  -> panel.calendar (Calendario semanal de citas; param doctor={slug})
+
+---- MÉDICOS (CRUD bajo prefijo /admin) ----
+GET     /admin/doctors             -> panel.doctors.index
+GET     /admin/doctors/create      -> panel.doctors.create
+POST    /admin/doctors             -> panel.doctors.store
+GET     /admin/doctors/{doctor}    -> panel.doctors.show
+GET     /admin/doctors/{doctor}/edit -> panel.doctors.edit
+PUT     /admin/doctors/{doctor}    -> panel.doctors.update
+PATCH   /admin/doctors/{doctor}    -> panel.doctors.update
+DELETE  /admin/doctors/{doctor}    -> panel.doctors.destroy
+
+---- CITAS (CRUD bajo prefijo /admin) ----
+GET     /admin/appointments        -> panel.appointments.index
+GET     /admin/appointments/create -> panel.appointments.create
+POST    /admin/appointments        -> panel.appointments.store
+GET     /admin/appointments/{appointment}        -> panel.appointments.show
+GET     /admin/appointments/{appointment}/edit   -> panel.appointments.edit
+PUT     /admin/appointments/{appointment}        -> panel.appointments.update
+PATCH   /admin/appointments/{appointment}        -> panel.appointments.update
+DELETE  /admin/appointments/{appointment}        -> panel.appointments.destroy
+POST    /admin/appointments/{appointment}/accept -> panel.appointments.accept (Aceptar cita pendiente)
+POST    /admin/appointments/{appointment}/reject -> panel.appointments.reject (Rechazar cita pendiente)
+
+==================== API (SANCTUM EJEMPLO) ====================
+GET     /api/user                  -> retorna usuario autenticado (headers con token)
+
+Notas:
+- {doctor} y {appointment} usan model binding por slug.
+- Parámetros de consulta relevantes: /calendar?doctor={slug}, /appointments/new?doctor={slug}&start={ISO8601}.
+- Estados de cita: pendiente | confirmada | completada | rechazada.
+- Duración estándar controlada por APPOINTMENT_DURATION_MINUTES en .env.
+
+==================== RESUMEN DEL PROYECTO ====================
+Objetivo: Plataforma web para agendamiento, aprobación o denegación de citas médicas (especialidad Neumología) usando Laravel 12, Jetstream (Inertia + Vue), Tailwind.
+
+Arquitectura:
+- Backend Laravel con modelos: Doctor, Appointment, DoctorAvailability (slugs para binding limpio en rutas).
+- Controladores públicos (calendario semanal, perfil médico, creación de cita) y panel admin (/home, /calendar, CRUD médicos y citas, acciones aceptar/rechazar).
+- Lógica de disponibilidad semanal y generación de slots según APPOINTMENT_DURATION_MINUTES.
+- Mailables para creación, aceptación y rechazo (mailer en modo log).
+- Vue + Inertia para páginas públicas y panel; Tailwind para estilos.
+
+Flujo de Cita:
+1. Usuario selecciona médico y franja libre (pendiente).
+2. Admin acepta (confirmada) o rechaza (rechazada). Posterior completada se puede marcar manualmente (si implementado futuro).
+
+Estados: pendiente | confirmada | completada | rechazada.
+
+Detalles Técnicos Clave:
+- Slugs: `getRouteKeyName()` en Doctor y Appointment.
+- Validación de colisiones: Antes de crear cita se verifica disponibilidad y ausencia de otra cita en el mismo intervalo.
+- Disponibilidad semanal: Tabla doctor_availabilities con weekday + rango horario; se calculan slots en backend.
+- Seed inicial: 3 doctores neumología con disponibilidad L-V 09:00-17:00 (duración cita .env).
+- Seguridad: Rutas panel bajo middleware auth + verified; prefijo /admin para distinguir recursos médicos y citas del POST público /appointments.
+
+Archivos Relevantes:
+- `app/Models/*`: Modelos con relaciones y slugs.
+- `app/Http/Controllers/PublicController.php`, `PublicAppointmentController.php`: Lógica pública.
+- `app/Http/Controllers/DoctorController.php`, `AppointmentController.php`: Panel y acciones aceptar/rechazar.
+- `resources/js/Pages/Public/*` y `resources/js/Pages/Admin/*`: Páginas Inertia.
+- `resources/views/emails/*`: Plantillas mail.
+- `.env`: Config Postgres, APPOINTMENT_DURATION_MINUTES, MAIL_MAILER=log.
+- `database/seeders/DatabaseSeeder.php`: Crea admin y doctores con disponibilidad.
+
+Pendiente Actual:
+- Prueba E2E manual (navegar calendario público, reservar, aceptar/rechazar y verificar correos en log).
+
+Comandos Útiles:
+`php artisan migrate --seed` -> Migrar y sembrar datos.
+`php artisan serve` -> Servir backend (http://127.0.0.1:8000).
+`npm run dev` / `npm run build` -> Compilar assets Vite.
+`php artisan route:list` -> Ver rutas (ya reflejadas arriba).
+
+Siguientes Pasos (Opcionales):
+- Redirigir `/dashboard` a `/home` para coherencia de panel.
+- Implementar marcado de cita como completada.
+- Integrar Mailtrap o SMTP real para correos externos.
+
+Fin del resumen.
+
+
