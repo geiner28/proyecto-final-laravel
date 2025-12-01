@@ -76,6 +76,35 @@
         </button>
       </div>
 
+      <!-- Widget de Búsqueda de Diagnósticos (Solo Admin) -->
+      <div v-if="!currentDoctor" class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl shadow-lg p-6 mb-8 text-white">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur">
+              <i class="fas fa-file-medical text-3xl"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold mb-1">Historia Clínica de Pacientes</h3>
+              <p class="text-purple-100 text-sm">Consulta diagnósticos médicos por cédula del paciente</p>
+            </div>
+          </div>
+          <form @submit.prevent="buscarDiagnosticos" class="flex gap-2 w-full md:w-auto">
+            <input 
+              v-model="cedulaBusqueda"
+              type="text"
+              placeholder="Ingrese cédula..."
+              class="px-4 py-3 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 flex-1 md:w-64"
+            />
+            <button 
+              type="submit"
+              class="px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-purple-50 transition flex items-center gap-2 whitespace-nowrap">
+              <i class="fas fa-search"></i>
+              Buscar
+            </button>
+          </form>
+        </div>
+      </div>
+
       <!-- Estadísticas Rápidas -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-yellow-500 hover:shadow-xl transition-shadow">
@@ -286,6 +315,7 @@ const props = defineProps({
 })
 
 const doctorSlug = ref('')
+const cedulaBusqueda = ref('')
 
 function filtrar() {
   if (props.currentDoctor) return
@@ -297,6 +327,12 @@ function verCalendario() {
     router.get('/calendar')
   } else if (doctorSlug.value) {
     router.get('/calendar', { doctor: doctorSlug.value })
+  }
+}
+
+function buscarDiagnosticos() {
+  if (cedulaBusqueda.value.trim()) {
+    router.get('/admin/diagnostics', { cedula: cedulaBusqueda.value.trim() })
   }
 }
 

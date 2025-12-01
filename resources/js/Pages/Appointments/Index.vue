@@ -507,6 +507,15 @@ const stats = computed(() => {
 
                                 <!-- Acciones -->
                                 <div class="flex lg:flex-col gap-3 flex-wrap">
+                                    <!-- Ver Diagnóstico -->
+                                    <Link
+                                        v-if="appointment.status === 'completada' && appointment.diagnostic"
+                                        :href="`/admin/diagnostics/${appointment.diagnostic.id}`"
+                                        class="flex-1 lg:flex-none px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all text-center"
+                                    >
+                                        <i class="fas fa-file-medical mr-2"></i>Ver Diagnóstico
+                                    </Link>
+
                                     <!-- Confirmar -->
                                     <button
                                         v-if="canConfirm(appointment)"

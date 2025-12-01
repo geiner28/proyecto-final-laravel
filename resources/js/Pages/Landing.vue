@@ -223,6 +223,79 @@
       </div>
     </section>
 
+    <!-- Sección de Consulta de Diagnósticos - Prominente -->
+    <section class="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50"></div>
+      <div class="absolute top-0 right-0 w-96 h-96 bg-purple-300/20 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 left-0 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl"></div>
+
+      <div class="max-w-5xl mx-auto relative z-10">
+        <div class="glass bg-white/90 backdrop-blur-xl rounded-3xl p-8 sm:p-12 shadow-2xl border border-white/20">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 border border-purple-100 rounded-full mb-4">
+              <i class="fas fa-file-medical text-purple-600"></i>
+              <span class="text-sm font-medium text-purple-700">Acceso Rápido a tu Historia Clínica</span>
+            </div>
+            
+            <h2 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
+              Consulta tus <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">Diagnósticos Médicos</span>
+            </h2>
+            
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+              Accede a tu historia clínica completa en cualquier momento. Descarga tus diagnósticos en PDF y mantén el control de tu salud.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-6 mb-10">
+            <div class="text-center p-6 bg-purple-50/50 rounded-2xl">
+              <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <i class="fas fa-id-card text-white text-2xl"></i>
+              </div>
+              <h3 class="font-bold text-gray-900 mb-2">Solo tu Cédula</h3>
+              <p class="text-sm text-gray-600">Ingresa tu número de identificación para acceder</p>
+            </div>
+
+            <div class="text-center p-6 bg-indigo-50/50 rounded-2xl">
+              <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <i class="fas fa-history text-white text-2xl"></i>
+              </div>
+              <h3 class="font-bold text-gray-900 mb-2">Historia Completa</h3>
+              <p class="text-sm text-gray-600">Ve todos tus diagnósticos anteriores</p>
+            </div>
+
+            <div class="text-center p-6 bg-blue-50/50 rounded-2xl">
+              <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <i class="fas fa-file-download text-white text-2xl"></i>
+              </div>
+              <h3 class="font-bold text-gray-900 mb-2">Descarga en PDF</h3>
+              <p class="text-sm text-gray-600">Documentos oficiales para cualquier uso</p>
+            </div>
+          </div>
+
+          <div class="flex justify-center">
+            <Link 
+              :href="route('public.diagnostics.search')"
+              class="group relative px-10 py-5 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:via-indigo-700 hover:to-blue-700 text-white rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-purple-500/50 overflow-hidden"
+            >
+              <span class="relative z-10 flex items-center justify-center gap-3">
+                <i class="fas fa-file-medical text-2xl group-hover:rotate-12 transition-transform"></i>
+                <span>Consultar Mis Diagnósticos</span>
+                <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+              </span>
+              <div class="absolute inset-0 bg-gradient-to-r from-purple-700 via-indigo-700 to-blue-700 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            </Link>
+          </div>
+
+          <div class="mt-8 text-center">
+            <p class="text-sm text-gray-500 flex items-center justify-center gap-2">
+              <i class="fas fa-lock text-purple-600"></i>
+              Tus datos médicos están protegidos y son confidenciales
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Cómo funciona -->
     <section id="como-funciona" class="py-20 px-4 sm:px-6 bg-white/30 backdrop-blur-sm relative overflow-hidden">
       <!-- Elementos decorativos -->
@@ -373,6 +446,7 @@
             <ul class="space-y-3 text-sm text-gray-400">
               <li><a href="#servicios" class="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">Servicios</a></li>
               <li><Link :href="route('public.consultar.form')" class="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">Consultar Cita</Link></li>
+              <li><Link :href="route('public.diagnostics.search')" class="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">Consultar Diagnósticos</Link></li>
               <li><a href="#como-funciona" class="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">Cómo Funciona</a></li>
             </ul>
           </div>

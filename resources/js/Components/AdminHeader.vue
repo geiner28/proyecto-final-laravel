@@ -4,7 +4,7 @@
       <div class="flex justify-between items-center h-16">
         <!-- Logo y título -->
         <div class="flex items-center gap-3">
-          <a href="/home" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          <Link :href="homeRoute" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <div class="bg-gradient-to-br from-blue-600 to-indigo-600 w-10 h-10 rounded-lg flex items-center justify-center">
               <i class="fas fa-heartbeat text-white text-xl"></i>
             </div>
@@ -12,18 +12,18 @@
               <h1 class="text-xl font-bold text-gray-900">MediCitas</h1>
               <p class="text-xs text-gray-500">{{ subtitle || (currentDoctor ? 'Panel Médico' : 'Panel Administrativo') }}</p>
             </div>
-          </a>
+          </Link>
         </div>
 
         <!-- Navegación -->
         <div class="flex items-center gap-3">
           <!-- Botón Home -->
-          <a href="/home" 
+          <Link :href="homeRoute" 
              class="flex items-center gap-2 px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
              title="Inicio">
             <i class="fas fa-home text-lg"></i>
-            <span class="hidden lg:inline text-sm font-medium">Inicio</span>
-          </a>
+            <span class="hidden lg:inline text-sm font-medium">{{ currentDoctor ? 'Dashboard' : 'Inicio' }}</span>
+          </Link>
 
           <!-- Gestión de Citas -->
           <a href="/admin/appointments" 
@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import { router } from '@inertiajs/vue3'
+import { router, Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -83,6 +83,15 @@ const props = defineProps({
     type: String,
     default: null
   }
+})
+
+const homeRoute = computed(() => {
+  // Si es médico, ir a su dashboard
+  if (props.currentDoctor) {
+    return '/doctor/appointments'
+  }
+  // Si es admin, ir al panel home
+  return '/home'
 })
 
 const userName = computed(() => {

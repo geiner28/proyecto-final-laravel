@@ -10,6 +10,7 @@ use App\Http\Controllers\PublicAppointmentController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\DoctorAppointmentController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\DiagnosticController;
 
 // Landing inicial: página pública sin autenticación
 Route::get('/', function () {
@@ -33,6 +34,12 @@ Route::post('/appointments', [PublicAppointmentController::class, 'store'])->nam
 // Consulta pública de citas por cédula
 Route::get('/consultar-cita', [PublicAppointmentController::class, 'consultaForm'])->name('public.consultar.form');
 Route::post('/consultar-cita', [PublicAppointmentController::class, 'consultar'])->name('public.consultar');
+
+// Consulta pública de diagnósticos por cédula (sin autenticación)
+Route::get('/consultar-diagnostico', [DiagnosticController::class, 'publicSearch'])->name('public.diagnostics.search');
+Route::post('/consultar-diagnostico', [DiagnosticController::class, 'publicSearch'])->name('public.diagnostics.search.post');
+// Descargar PDF de diagnóstico (público)
+Route::get('/diagnostics/{diagnostic}/pdf', [DiagnosticController::class, 'downloadPDF'])->name('public.diagnostics.pdf');
 
 // Cancelar y reagendar citas (paciente)
 Route::post('/appointments/{appointment:slug}/cancel', [PublicAppointmentController::class, 'cancel'])->name('public.appointments.cancel');
@@ -65,11 +72,24 @@ Route::middleware([
         Route::post('/appointments/{appointment:slug}/cancel', [AppointmentController::class, 'cancel'])->name('panel.appointments.cancel');
         Route::get('/appointments/{appointment:slug}/reschedule', [AppointmentController::class, 'rescheduleForm'])->name('panel.appointments.reschedule-form');
         Route::post('/appointments/{appointment:slug}/reschedule', [AppointmentController::class, 'reschedule'])->name('panel.appointments.reschedule');
+        
+        // Diagnósticos (admin)
+        Route::get('/diagnostics', [DiagnosticController::class, 'index'])->name('admin.diagnostics.index');
+        Route::get('/diagnostics/{diagnostic}', [DiagnosticController::class, 'show'])->name('admin.diagnostics.show');
+        Route::get('/diagnostics/{diagnostic}/pdf', [DiagnosticController::class, 'downloadPDF'])->name('admin.diagnostics.pdf');
+        Route::get('/patient-history', [DiagnosticController::class, 'patientHistory'])->name('admin.diagnostics.patient-history');
     });
     
     // Rutas para médicos
     Route::prefix('doctor')->middleware(['doctor'])->group(function () {
         Route::get('/appointments', [DoctorAppointmentController::class, 'index'])->name('doctor.appointments.index');
         Route::post('/appointments/{appointment:slug}/complete', [DoctorAppointmentController::class, 'complete'])->name('doctor.appointments.complete');
+        
+        // Diagnósticos (doctor)
+        Route::get('/diagnostics', [DiagnosticController::class, 'index'])->name('doctor.diagnostics.index');
+        Route::get('/diagnostics/create/{appointment:slug}', [DiagnosticController::class, 'create'])->name('doctor.diagnostics.create');
+        Route::post('/diagnostics/store/{appointment:slug}', [DiagnosticController::class, 'store'])->name('doctor.diagnostics.store');
+        Route::get('/diagnostics/{diagnostic}', [DiagnosticController::class, 'show'])->name('doctor.diagnostics.show');
+        Route::get('/diagnostics/{diagnostic}/pdf', [DiagnosticController::class, 'downloadPDF'])->name('doctor.diagnostics.pdf');
     });
 });

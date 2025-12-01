@@ -21,7 +21,7 @@ class AppointmentController extends Controller
     public function index(Request $request)
     {
         // Listado de citas con filtros por estado, médico y búsqueda
-        $query = Appointment::query()->with('doctor');
+        $query = Appointment::query()->with(['doctor', 'diagnostic']);
 
         // Filtro por búsqueda (nombre o cédula)
         if ($request->filled('search')) {
@@ -182,7 +182,7 @@ class AppointmentController extends Controller
     public function home(Request $request)
     {
         $user = $request->user();
-        $query = Appointment::query()->with('doctor');
+        $query = Appointment::query()->with(['doctor', 'diagnostic']);
         
         // Si el usuario es médico, filtrar solo sus citas
         if ($user->isDoctor() && $user->doctor) {

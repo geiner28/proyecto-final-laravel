@@ -41,24 +41,53 @@ const logout = () => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('panel.home')">
+                                <Link :href="$page.props.auth.user.role === 'doctor' ? route('doctor.appointments.index') : route('panel.home')">
                                     <ApplicationMark class="block h-9 w-auto" />
                                 </Link>
                             </div>
 
-                            <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('panel.home')" :active="route().current('panel.home')">
-                                    <i class="fas fa-home mr-2"></i>Inicio
+                            <!-- Navigation Links - ADMIN -->
+                            <div v-if="$page.props.auth.user.role === 'admin'" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('panel.appointments.index')" :active="route().current('panel.appointments.*')">
+                                    <i class="fas fa-calendar-check mr-2"></i>Citas
                                 </NavLink>
                                 <NavLink :href="route('panel.calendar')" :active="route().current('panel.calendar')">
                                     <i class="fas fa-calendar-alt mr-2"></i>Calendario
                                 </NavLink>
-                                <NavLink :href="route('panel.appointments.index')" :active="route().current('panel.appointments.*')">
-                                    <i class="fas fa-list mr-2"></i>Citas
+                                <NavLink :href="route('admin.diagnostics.index')" :active="route().current('admin.diagnostics.*')">
+                                    <i class="fas fa-file-medical mr-2"></i>Diagnósticos
+                                </NavLink>
+                                <NavLink :href="route('panel.doctors.index')" :active="route().current('panel.doctors.*')">
+                                    <i class="fas fa-user-md mr-2"></i>Médicos
                                 </NavLink>
                                 <NavLink :href="route('landing')">
-                                    <i class="fas fa-arrow-left mr-2"></i>Volver al Inicio
+                                    <i class="fas fa-globe mr-2"></i>Sitio Público
+                                </NavLink>
+                            </div>
+
+                            <!-- Navigation Links - DOCTOR -->
+                            <div v-if="$page.props.auth.user.role === 'doctor'" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('doctor.appointments.index')" :active="route().current('doctor.appointments.*')">
+                                    <i class="fas fa-th-large mr-2"></i>Dashboard
+                                </NavLink>
+                                <NavLink :href="route('panel.calendar')" :active="route().current('panel.calendar')">
+                                    <i class="fas fa-calendar-alt mr-2"></i>Calendario
+                                </NavLink>
+                                <NavLink :href="route('doctor.diagnostics.index')" :active="route().current('doctor.diagnostics.*')">
+                                    <i class="fas fa-file-medical mr-2"></i>Historia Clínica
+                                </NavLink>
+                                <NavLink :href="route('landing')">
+                                    <i class="fas fa-globe mr-2"></i>Sitio Público
+                                </NavLink>
+                            </div>
+
+                            <!-- Navigation Links - PATIENT -->
+                            <div v-if="$page.props.auth.user.role === 'patient'" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('panel.home')" :active="route().current('panel.home')">
+                                    <i class="fas fa-home mr-2"></i>Inicio
+                                </NavLink>
+                                <NavLink :href="route('landing')">
+                                    <i class="fas fa-globe mr-2"></i>Sitio Público
                                 </NavLink>
                             </div>
                         </div>
@@ -236,18 +265,48 @@ const logout = () => {
 
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
-                    <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('panel.home')" :active="route().current('panel.home')">
-                            <i class="fas fa-home mr-2"></i>Inicio
+                    <!-- Navigation Links - ADMIN -->
+                    <div v-if="$page.props.auth.user.role === 'admin'" class="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink :href="route('panel.appointments.index')" :active="route().current('panel.appointments.*')">
+                            <i class="fas fa-calendar-check mr-2"></i>Citas
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('panel.calendar')" :active="route().current('panel.calendar')">
                             <i class="fas fa-calendar-alt mr-2"></i>Calendario
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('panel.appointments.index')" :active="route().current('panel.appointments.*')">
-                            <i class="fas fa-list mr-2"></i>Citas
+                        <ResponsiveNavLink :href="route('admin.diagnostics.index')" :active="route().current('admin.diagnostics.*')">
+                            <i class="fas fa-file-medical mr-2"></i>Diagnósticos
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('panel.doctors.index')" :active="route().current('panel.doctors.*')">
+                            <i class="fas fa-user-md mr-2"></i>Médicos
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('landing')">
-                            <i class="fas fa-arrow-left mr-2"></i>Volver al Inicio
+                            <i class="fas fa-globe mr-2"></i>Sitio Público
+                        </ResponsiveNavLink>
+                    </div>
+
+                    <!-- Navigation Links - DOCTOR -->
+                    <div v-if="$page.props.auth.user.role === 'doctor'" class="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink :href="route('doctor.appointments.index')" :active="route().current('doctor.appointments.*')">
+                            <i class="fas fa-th-large mr-2"></i>Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('panel.calendar')" :active="route().current('panel.calendar')">
+                            <i class="fas fa-calendar-alt mr-2"></i>Calendario
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('doctor.diagnostics.index')" :active="route().current('doctor.diagnostics.*')">
+                            <i class="fas fa-file-medical mr-2"></i>Historia Clínica
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('landing')">
+                            <i class="fas fa-globe mr-2"></i>Sitio Público
+                        </ResponsiveNavLink>
+                    </div>
+
+                    <!-- Navigation Links - PATIENT -->
+                    <div v-if="$page.props.auth.user.role === 'patient'" class="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink :href="route('panel.home')" :active="route().current('panel.home')">
+                            <i class="fas fa-home mr-2"></i>Inicio
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('landing')">
+                            <i class="fas fa-globe mr-2"></i>Sitio Público
                         </ResponsiveNavLink>
                     </div>
 

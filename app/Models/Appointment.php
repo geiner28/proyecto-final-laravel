@@ -47,4 +47,12 @@ class Appointment extends Model
     {
         return $this->belongsTo(Doctor::class);
     }
+
+    /**
+     * Relación: una cita puede tener un diagnóstico.
+     */
+    public function diagnostic()
+    {
+        return $this->hasOne(Diagnostic::class);
+    }
 }
